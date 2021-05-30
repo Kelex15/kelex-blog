@@ -52,7 +52,7 @@ class User(UserMixin, db.Model):
     comments = relationship("Comment", backref="comment_author")
 
 
-# db.create_all()
+db.create_all()
 
 
 class BlogPost(db.Model):
@@ -67,7 +67,7 @@ class BlogPost(db.Model):
     comments = relationship("Comment", backref="blog_posts")
 
 
-# db.create_all()
+db.create_all()
 
 
 class Comment(db.Model):
@@ -78,7 +78,7 @@ class Comment(db.Model):
     comment = db.Column(db.String(250), nullable=False)
 
 
-# db.create_all()
+db.create_all()
 
 
 @login_manager.user_loader
