@@ -34,7 +34,8 @@
             {% endfor%}
           {% endif %}
         {% endwith %}
-        {{ wtf.quick_form(form, novalidate=True, button_map={"submit": "primary"}) }}
+        {{ wtf.quick_form(form, novalidate=True, button_map={"login": "primary"}) }}
+        <h1>{{ form.login.label }}</h1>
       </div>
     </div>
   </div>

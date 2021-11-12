@@ -13,7 +13,7 @@ from html import unescape
 import os
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
+app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY", "kelex")
 ckeditor = CKEditor(app)
 Bootstrap(app)
 
@@ -53,7 +53,7 @@ class User(UserMixin, db.Model):
     comments = relationship("Comment", backref="comment_author")
 
 
-db.create_all()
+# db.create_all()
 
 
 class BlogPost(db.Model):
@@ -68,7 +68,7 @@ class BlogPost(db.Model):
     comments = relationship("Comment", backref="blog_posts")
 
 
-db.create_all()
+# db.create_all()
 
 
 class Comment(db.Model):
@@ -79,7 +79,7 @@ class Comment(db.Model):
     comment = db.Column(db.String(250), nullable=False)
 
 
-db.create_all()
+# db.create_all()
 
 
 @login_manager.user_loader
@@ -114,7 +114,7 @@ def register():
 
 @app.route('/login', methods=["GET", "POST"])
 def login():
-    form = CreateLoginForm()
+    form = CreateLoginForm(submit="Resend")
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         if user:
@@ -125,6 +125,7 @@ def login():
                 flash("The password is incorrect, try again.", category="error")
         else:
             flash("The email does not exist.", category="error")
+    form.hidden.label = current_user
     return render_template("login.html", form=form, current_user=current_user)
 
 
@@ -189,7 +190,7 @@ def add_new_post():
     return render_template("make-post.html", form=form, current_user=current_user)
 
 
-@app.route("/edit-post/<int:post_id>")
+@app.route("/edit-post/<int:post_id>", methods=["GET", "POST"])
 @admin_only
 def edit_post(post_id):
     post = BlogPost.query.get(post_id)
@@ -197,19 +198,17 @@ def edit_post(post_id):
         title=post.title,
         subtitle=post.subtitle,
         img_url=post.img_url,
-        author=post.author,
         body=post.body
     )
     if edit_form.validate_on_submit():
         post.title = edit_form.title.data
         post.subtitle = edit_form.subtitle.data
         post.img_url = edit_form.img_url.data
-        post.author = edit_form.author.data
         post.body = edit_form.body.data
         db.session.commit()
         return redirect(url_for("show_post", post_id=post.id))
 
-    return render_template("make-post.html", form=edit_form, current_user=current_user)
+    return render_template("make-post.html", form=edit_form, current_user=current_user, is_edit=True)
 
 
 @app.route("/delete/<int:post_id>")
@@ -222,4 +221,4 @@ def delete_post(post_id):
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='127.0.0.1', port=8080, debug=True)

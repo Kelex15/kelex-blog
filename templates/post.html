@@ -41,17 +41,23 @@
 <!--           Comments Area -->
 
           {{ ckeditor.load() }}
-          {{ ckeditor.config(name='body') }}
+          {{ ckeditor.config(name='comment') }}
           {{ wtf.quick_form(comment_form, novalidate=True, button_map={"submit": "primary"}) }}
           {% for comment in post_comments %}
-          <div class="col-lg-8 col-md-10 mx-auto comment">
+            <div class="col-lg-8 col-md-10 mx-auto comment">
               <ul class="commentList">
                 <li>
                     <div class="commenterImage">
                       <img src="{{ comment.comment_author.email | gravatar }}"/>
                     </div>
                     <div class="commentText">
-                      <p>{{ unescape(comment.comment.replace("<p>", "").replace("</p>", "")) }}</p>
+                      <!-- When I used html-parse.js
+                      <p id="{{ comment.id }}" class="parseLog">
+                        {{ comment.comment }}
+                      </p>
+                      <span class="date sub-text">{{ comment.comment_author.username }}</span>
+                      -->
+                      {{ comment.comment|safe }}
                       <span class="date sub-text">{{ comment.comment_author.username }}</span>
                     </div>
                 </li>
