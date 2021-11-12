@@ -154,6 +154,7 @@ Thumbs.db
 
 # profiling data
 .prof
-
+/blog.db
+/blog.sqbpro
 
 # End of https://www.toptal.com/developers/gitignore/api/flask
