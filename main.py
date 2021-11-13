@@ -1,3 +1,4 @@
+from datetime import datetime
 from flask import Flask, render_template, redirect, url_for, flash, abort
 from flask_bootstrap import Bootstrap
 from flask_ckeditor import CKEditor
@@ -90,7 +91,7 @@ def load_user(user_id):
 @app.route('/')
 def get_all_posts():
     posts = BlogPost.query.all()
-    return render_template("index.html", all_posts=posts, current_user=current_user)
+    return render_template("index.html", all_posts=posts, current_user=current_user, date=datetime.now().year)
 
 
 @app.route('/register', methods=["GET", "POST"])
@@ -109,7 +110,7 @@ def register():
         db.session.commit()
         login_user(new_user)
         return redirect(url_for("get_all_posts"))
-    return render_template("register.html", form=form, current_user=current_user)
+    return render_template("register.html", form=form, current_user=current_user, date=datetime.now().year)
 
 
 @app.route('/login', methods=["GET", "POST"])
@@ -126,7 +127,7 @@ def login():
         else:
             flash("The email does not exist.", category="error")
     form.hidden.label = current_user
-    return render_template("login.html", form=form, current_user=current_user)
+    return render_template("login.html", form=form, current_user=current_user, date=datetime.now().year)
 
 
 @app.route('/logout')
@@ -162,12 +163,12 @@ def show_post(post_id):
 
 @app.route("/about")
 def about():
-    return render_template("about.html")
+    return render_template("about.html", date=datetime.now().year)
 
 
 @app.route("/contact")
 def contact():
-    return render_template("contact.html", current_user=current_user)
+    return render_template("contact.html", current_user=current_user, date=datetime.now().year)
 
 
 @app.route("/new-post", methods=["GET", "POST"])
@@ -208,7 +209,8 @@ def edit_post(post_id):
         db.session.commit()
         return redirect(url_for("show_post", post_id=post.id))
 
-    return render_template("make-post.html", form=edit_form, current_user=current_user, is_edit=True)
+    return render_template("make-post.html", form=edit_form, current_user=current_user, is_edit=True,
+                           date=datetime.now().year)
 
 
 @app.route("/delete/<int:post_id>")

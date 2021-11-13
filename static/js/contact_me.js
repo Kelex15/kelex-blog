@@ -18,9 +18,10 @@ $(function() {
         firstName = name.split(' ').slice(0, -1).join(' ');
       }
       $this = $("#sendMessageButton");
+      console.log("Button Pressed")
       $this.prop("disabled", true); // Disable submit button until AJAX call is complete to prevent duplicate messages
       $.ajax({
-        url: "././mail/contact_me.php",
+        url: "mailto:kelex062@gmail",
         type: "POST",
         data: {
           name: name,
